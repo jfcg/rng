@@ -31,3 +31,15 @@ func BenchmarkGet(b *testing.B) {
 		_ = Get()
 	}
 }
+
+func BenchmarkTwo(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = Two()
+	}
+}
+
+func BenchmarkNormal(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, _ = Normal()
+	}
+}
