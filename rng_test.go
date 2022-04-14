@@ -32,6 +32,18 @@ func BenchmarkGet(b *testing.B) {
 	}
 }
 
+func BenchmarkExp(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = Exp()
+	}
+}
+
+func BenchmarkOne(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = One()
+	}
+}
+
 func BenchmarkTwo(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = Two()

@@ -5,9 +5,26 @@ import (
 	"unsafe"
 )
 
+// One returns a uniformly distributed random number from (0,1)
+func One() float64 {
+	var i uint64
+	// set sign=exponent=0 to get double from [1,2)
+	for {
+		i = Get() << 12
+		if i != 0 { // avoid 1
+			break
+		}
+	}
+	i |= 1<<10 - 1
+	i = i>>12 ^ i<<52
+
+	f := *(*float64)(unsafe.Pointer(&i))
+	return f - 1
+}
+
 // Two returns a uniformly distributed random number from (-1,1)
 func Two() float64 {
-	// set exponent=0 to get double from +/-[1,2)
+	// set exponent=0 to get double from ±[1,2)
 	i := Get() << 11
 	i |= 1<<10 - 1
 	i = i>>12 ^ i<<52
@@ -17,6 +34,11 @@ func Two() float64 {
 		return f + 1
 	}
 	return f - 1
+}
+
+// Exp returns an exponentially distributed random number with unit mean
+func Exp() float64 {
+	return -math.Log(One())
 }
 
 // Normal returns two independent & normally distributed

@@ -1,6 +1,9 @@
 package rng
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 const (
 	Large = 1e8
@@ -31,6 +34,14 @@ func testfn(t *testing.T, fn func() float64, lo, med, hi float64, name string) {
 	print(t, pos, neg, mean, vari)
 }
 
+func TestExp(t *testing.T) {
+	testfn(t, Exp, 0, math.Ln2, 9e9, "Exp")
+}
+
+func TestOne(t *testing.T) {
+	testfn(t, One, 0, 0.5, 1, "One")
+}
+
 func TestTwo(t *testing.T) {
 	testfn(t, Two, -1, 0, 1, "Two")
 }
@@ -38,7 +49,7 @@ func TestTwo(t *testing.T) {
 func print(t *testing.T, p, n int, mean, vari float64) {
 	mean /= Small
 	vari = (vari - Small*(mean*mean)) / (Small - 1)
-	t.Log("hi:", p, "lo:", n, "med:", Large-p-n)
+	t.Log("hi:", p, "lo:", n)
 	t.Logf("mean: %+6.4f variance: %6.4f\n", mean, vari)
 }
 
