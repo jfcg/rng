@@ -11,6 +11,10 @@ import (
 	"unsafe"
 )
 
+func u2f(i uint64) float64 {
+	return *(*float64)(unsafe.Pointer(&i))
+}
+
 // One returns a uniformly distributed random number from (0,1)
 func One() float64 {
 	var i uint64
@@ -24,8 +28,7 @@ func One() float64 {
 	i |= 1<<10 - 1
 	i = i>>12 ^ i<<52
 
-	f := *(*float64)(unsafe.Pointer(&i))
-	return f - 1
+	return u2f(i) - 1
 }
 
 // Two returns a uniformly distributed random number from (-1,1)
@@ -35,11 +38,10 @@ func Two() float64 {
 	i |= 1<<10 - 1
 	i = i>>12 ^ i<<52
 
-	f := *(*float64)(unsafe.Pointer(&i))
 	if int64(i) < 0 {
-		return f + 1
+		return u2f(i) + 1
 	}
-	return f - 1
+	return u2f(i) - 1
 }
 
 // Exp returns an exponentially distributed random number with unit mean

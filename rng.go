@@ -18,9 +18,9 @@ var state [3]uint64
 
 //go:norace
 func round(a, b, c uint64) {
-	b++
+	b ^= 0x5555555555555555
+	c ^= 0x3333333333333333
 	b = b>>21 ^ b<<43
-	c--
 	c = c<<21 ^ c>>43
 
 	state[0] = b ^ c&^a
