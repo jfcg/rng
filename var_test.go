@@ -64,8 +64,8 @@ func TestNormal(t *testing.T) {
 	for i := Large / 2; i > 0; i-- {
 
 		x, y := Normal()
-		if x != x || x > 6.3 || x < -6.3 ||
-			y != y || y > 6.3 || y < -6.3 {
+		if x != x || x > 6.5 || x < -6.5 ||
+			y != y || y > 6.5 || y < -6.5 {
 			t.Fatal("rng.Normal: unusual outputs:", x, y)
 		}
 		if x > 0 {

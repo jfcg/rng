@@ -7,6 +7,7 @@
 package rng
 
 import (
+	"math/rand"
 	"sort"
 	"testing"
 )
@@ -32,6 +33,14 @@ func BenchmarkGet(b *testing.B) {
 	}
 }
 
+func BenchmarkRandGet(b *testing.B) {
+	mr := rand.New(rand.NewSource(Large - 1))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = mr.Uint64()
+	}
+}
+
 func BenchmarkExp(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = Exp()
@@ -41,6 +50,14 @@ func BenchmarkExp(b *testing.B) {
 func BenchmarkOne(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = One()
+	}
+}
+
+func BenchmarkRandOne(b *testing.B) {
+	mr := rand.New(rand.NewSource(Large - 1))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = mr.Float64()
 	}
 }
 
