@@ -33,7 +33,7 @@ func BenchmarkGet(b *testing.B) {
 	}
 }
 
-func BenchmarkRandGet(b *testing.B) {
+func BenchmarkStdGet(b *testing.B) {
 	mr := rand.New(rand.NewSource(Large - 1))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -53,7 +53,7 @@ func BenchmarkOne(b *testing.B) {
 	}
 }
 
-func BenchmarkRandOne(b *testing.B) {
+func BenchmarkStdOne(b *testing.B) {
 	mr := rand.New(rand.NewSource(Large - 1))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

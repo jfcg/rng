@@ -12,81 +12,75 @@ import (
 )
 
 const (
-	Large = 1e8
+	Large = 10_000_000
 	Small = 128
 )
 
-func testfn(t *testing.T, fn func() float64, lo, med, hi float64, name string) {
-	pos, neg := 0, 0
+func testfn(t *testing.T, fn func() (float64, float64),
+	lo, med, hi, imean, istd float64, name string) {
+
+	px, nx, py, ny := 0, 0, 0, 0
 	for i := Large; i > 0; i-- {
 
-		x := fn()
-		if x != x || x <= lo || x >= hi {
-			t.Fatalf("rng.%s: bad output: %f\n", name, x)
+		x, y := fn()
+		if x != x || x <= lo || x >= hi ||
+			y != y || y <= lo || y >= hi {
+			t.Fatalf("rng.%s: bad output: %f, %f\n", name, x, y)
 		}
 		if x > med {
-			pos++
+			px++
 		} else if x < med {
-			neg++
+			nx++
+		}
+		if y > med {
+			py++
+		} else if y < med {
+			ny++
 		}
 	}
 
-	mean, vari := .0, .0
+	mx, vx, my, vy, mxy := .0, .0, .0, .0, .0
 	for i := Small; i > 0; i-- {
-		x := fn()
-		mean += x
-		vari += x * x
+		x, y := fn()
+		mx += x
+		my += y
+		vx += x * x
+		vy += y * y
+		mxy += x * y
 	}
-	print(t, pos, neg, mean, vari)
+	t.Logf("mean: %+6.4f stdev: %6.4f (ideal)\n", imean, istd)
+	mx, sx := stats(t, mx, vx, px, nx)
+	my, sy := stats(t, my, vy, py, ny)
+	mxy /= Small
+	t.Logf("corr: %+6.4f\n", (mxy-mx*my)/(sx*sy))
+}
+
+func stats(t *testing.T, mean, vari float64, p, n int) (float64, float64) {
+	mean /= Small
+	std := math.Sqrt((vari - mean*mean*Small) / (Small - 1)) // from unbiased variance
+
+	t.Logf("mean: %+6.4f stdev: %6.4f hi: %d lo: %d\n", mean, std, p, n)
+	return mean, std
 }
 
 func TestExp(t *testing.T) {
-	testfn(t, Exp, 0, math.Ln2, 9e9, "Exp")
+	testfn(t, func() (float64, float64) {
+		return Exp(), Exp()
+	}, 0, math.Ln2, 25, 1, 1, "Exp")
 }
 
 func TestOne(t *testing.T) {
-	testfn(t, One, 0, 0.5, 1, "One")
+	testfn(t, func() (float64, float64) {
+		return One(), One()
+	}, 0, 0.5, 1, 0.5, 0.288675, "One")
 }
 
 func TestTwo(t *testing.T) {
-	testfn(t, Two, -1, 0, 1, "Two")
-}
-
-func print(t *testing.T, p, n int, mean, vari float64) {
-	mean /= Small
-	vari = (vari - Small*(mean*mean)) / (Small - 1)
-	t.Log("hi:", p, "lo:", n)
-	t.Logf("mean: %+6.4f variance: %6.4f\n", mean, vari)
+	testfn(t, func() (float64, float64) {
+		return Two(), Two()
+	}, -1, 0, 1, 0, 0.57735, "Two")
 }
 
 func TestNormal(t *testing.T) {
-	pos, neg := 0, 0
-	for i := Large / 2; i > 0; i-- {
-
-		x, y := Normal()
-		if x != x || x > 6.5 || x < -6.5 ||
-			y != y || y > 6.5 || y < -6.5 {
-			t.Fatal("rng.Normal: unusual outputs:", x, y)
-		}
-		if x > 0 {
-			pos++
-		} else if x < 0 {
-			neg++
-		}
-		if y > 0 {
-			pos++
-		} else if y < 0 {
-			neg++
-		}
-	}
-
-	mean, vari := .0, .0
-	for i := Small / 2; i > 0; i-- {
-		x, y := Normal()
-		mean += x
-		mean += y
-		vari += x * x
-		vari += y * y
-	}
-	print(t, pos, neg, mean, vari)
+	testfn(t, Normal, -6.5, 0, 6.5, 0, 1, "Normal")
 }
