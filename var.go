@@ -19,11 +19,8 @@ func u2f(i uint64) float64 {
 func One() float64 {
 	var i uint64
 	// set sign=exponent=0 to get double from [1,2)
-	for {
+	for i == 0 { // avoid 1
 		i = Get() << 12
-		if i != 0 { // avoid 1
-			break
-		}
 	}
 	i |= 1<<10 - 1
 	i = i>>12 ^ i<<52
@@ -34,14 +31,16 @@ func One() float64 {
 // Two returns a uniformly distributed random number from (-1,1)
 func Two() float64 {
 	// set exponent=0 to get double from ±[1,2)
-	i := Get() << 11
+	i := Get()
+	s := i & 1
+	i <<= 11
+	s <<= 11
 	i |= 1<<10 - 1
+	s |= 1<<10 - 1
 	i = i>>12 ^ i<<52
+	s = s>>12 ^ s<<52 // s = sign(i)
 
-	if int64(i) < 0 {
-		return u2f(i) + 1
-	}
-	return u2f(i) - 1
+	return u2f(i) - u2f(s)
 }
 
 // Exp returns an exponentially distributed random number with unit mean
@@ -53,13 +52,10 @@ func Exp() float64 {
 // random numbers with zero mean and unit variance
 func Normal() (float64, float64) {
 	var x, y, k float64
-	for {
+	for !(0 < k && k < 1) {
 		x = Two()
 		y = Two()
 		k = x*x + y*y
-		if 0 < k && k < 1 {
-			break
-		}
 	}
 	k = math.Sqrt(-2 * math.Log(k) / k)
 	return k * x, k * y
