@@ -49,9 +49,9 @@ func Get() uint64 {
 }
 
 func putS(s string) {
-	lu := sixb.StoU8(s)
+	lu := sixb.StoU4(s)
 	for _, u := range lu {
-		Put(u)
+		Put(uint64(u))
 	}
 }
 
