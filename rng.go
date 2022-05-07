@@ -25,9 +25,18 @@ func round(a, b, c uint64) {
 	b = b>>21 ^ b<<43
 	c = c<<21 ^ c>>43
 
-	state[0] = b ^ c&^a
-	state[1] = c ^ a&^b
-	state[2] = a ^ b&^c
+	x := b ^ c&^a
+	y := c ^ a&^b
+	z := a ^ b&^c
+
+	y ^= 0x6666666666666666
+	z ^= 0xaaaaaaaaaaaaaaaa
+	y = y>>21 ^ y<<43
+	z = z<<21 ^ z>>43
+
+	state[0] = y ^ z&^x
+	state[1] = z ^ x&^y
+	state[2] = x ^ y&^z
 }
 
 // Put x into rng
