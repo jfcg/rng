@@ -18,8 +18,14 @@ import (
 
 var state [3]uint64
 
+// Put u into rng
 //go:norace
-func round(a, b, c uint64) {
+func Put(u uint64) {
+	a := state[0]
+	b := state[1]
+	c := state[2]
+	a ^= u
+
 	b ^= 0x5555555555555555
 	c ^= 0x3333333333333333
 	b = b>>21 ^ b<<43
@@ -39,23 +45,30 @@ func round(a, b, c uint64) {
 	state[2] = x ^ y&^z
 }
 
-// Put x into rng
-//go:norace
-func Put(x uint64) {
-	a := state[0]
-	b := state[1]
-	c := state[2]
-	a ^= x
-	round(a, b, c)
-}
-
 // Get from rng
 //go:norace
 func Get() uint64 {
 	a := state[0]
 	b := state[1]
 	c := state[2]
-	round(a, b, c)
+
+	b ^= 0x5555555555555555
+	c ^= 0x3333333333333333
+	b = b>>21 ^ b<<43
+	c = c<<21 ^ c>>43
+
+	x := b ^ c&^a
+	y := c ^ a&^b
+	z := a ^ b&^c
+
+	y ^= 0x6666666666666666
+	z ^= 0xaaaaaaaaaaaaaaaa
+	y = y>>21 ^ y<<43
+	z = z<<21 ^ z>>43
+
+	state[0] = y ^ z&^x
+	state[1] = z ^ x&^y
+	state[2] = x ^ y&^z
 	return a
 }
 
