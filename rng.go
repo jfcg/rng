@@ -10,6 +10,8 @@ package rng
 
 import (
 	"os"
+	"time"
+	"unsafe"
 
 	"github.com/jfcg/sixb"
 )
@@ -50,30 +52,41 @@ func Get() uint64 {
 
 func putS(s string) {
 	lu := sixb.StoU4(s)
+	if len(lu) <= 0 {
+		return
+	}
+	Put(uint64(uintptr(unsafe.Pointer(&lu[0]))))
 	for _, u := range lu {
 		Put(uint64(u))
 	}
 }
 
 func putLs(ls []string) {
-	for _, s := range ls {
-		putS(s)
+	if len(ls) <= 0 {
+		return
 	}
+	Put(uint64(uintptr(unsafe.Pointer(&ls[0]))))
+	sum := ""
+	for _, s := range ls {
+		sum += s
+	}
+	putS(sum)
 }
 
 func init() {
 	// insert various data into rng
+	now := time.Now()
+	zone, off := now.Zone()
+	Put(uint64(now.UnixNano()))
+	Put(uint64(off))
 	Put(uint64(os.Getpid()))
 	Put(uint64(os.Getppid()))
+	Put(uint64(uintptr(unsafe.Pointer(&now))))
 
-	str, err := os.Getwd()
-	if err == nil {
-		putS(str)
-	}
-	str, err = os.Hostname()
-	if err == nil {
-		putS(str)
-	}
+	host, _ := os.Hostname()
+	wdir, _ := os.Getwd()
+	putS(zone + host + wdir)
+
 	putLs(os.Args)
 	putLs(os.Environ())
 }
