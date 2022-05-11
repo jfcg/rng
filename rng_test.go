@@ -28,47 +28,74 @@ func TestGet(t *testing.T) {
 }
 
 func BenchmarkGet(b *testing.B) {
+	var sum uint64
 	for i := 0; i < b.N; i++ {
-		_ = Get()
+		sum += Get()
 	}
 }
 
 func BenchmarkStdGet(b *testing.B) {
-	mr := rand.New(rand.NewSource(Large - 1))
+	var sum uint64
+	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = mr.Uint64()
+		sum += mr.Uint64()
 	}
 }
 
 func BenchmarkExp(b *testing.B) {
+	var sum float64
 	for i := 0; i < b.N; i++ {
-		_ = Exp()
+		sum += Exp()
+	}
+}
+
+func BenchmarkStdExp(b *testing.B) {
+	var sum float64
+	mr := rand.New(rand.NewSource(int64(b.N)))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sum += mr.ExpFloat64()
 	}
 }
 
 func BenchmarkOne(b *testing.B) {
+	var sum float64
 	for i := 0; i < b.N; i++ {
-		_ = One()
+		sum += One()
 	}
 }
 
 func BenchmarkStdOne(b *testing.B) {
-	mr := rand.New(rand.NewSource(Large - 1))
+	var sum float64
+	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = mr.Float64()
-	}
-}
-
-func BenchmarkTwo(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = Two()
+		sum += mr.Float64()
 	}
 }
 
 func BenchmarkNormal(b *testing.B) {
+	var sum1, sum2 float64
 	for i := 0; i < b.N; i++ {
-		_, _ = Normal()
+		x, y := Normal()
+		sum1 += x
+		sum2 += y
+	}
+}
+
+func BenchmarkStdNormal(b *testing.B) {
+	var sum float64
+	mr := rand.New(rand.NewSource(int64(b.N)))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		sum += mr.NormFloat64()
+	}
+}
+
+func BenchmarkTwo(b *testing.B) {
+	var sum float64
+	for i := 0; i < b.N; i++ {
+		sum += Two()
 	}
 }
