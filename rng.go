@@ -18,60 +18,64 @@ import (
 
 var state [3]uint64
 
+const (
+	// xor masks: equal amount of 1s & 0s
+	xm1 = 0x5555555555555555
+	xm2 = 0x3333333333333333
+	xm3 = xm2 << 1
+	xm4 = xm1 << 1
+
+	// rotatiom amount
+	rta = 21 // 64 / 3
+)
+
+// mix(u,v) is a permutation of state (a,b,c) consisting of
+// an affine map & the nonlinear chi map. inlined.
+func mix(a, b, c, u, v uint64) (x, y, z uint64) {
+	b ^= u
+	c ^= v
+	b = b>>rta ^ b<<(64-rta) // to right
+	c = c<<rta ^ c>>(64-rta) // to left
+
+	return b ^ c&^a, c ^ a&^b, a ^ b&^c
+}
+
 // Put u into rng
 //go:norace
+//go:nosplit
 func Put(u uint64) {
 	a := state[0]
 	b := state[1]
 	c := state[2]
 	a ^= u
 
-	b ^= 0x5555555555555555
-	c ^= 0x3333333333333333
-	b = b>>21 ^ b<<43
-	c = c<<21 ^ c>>43
+	a, b, c = mix(a, b, c, xm1, xm2)
+	a, b, c = mix(a, b, c, xm3, xm4)
 
-	x := b ^ c&^a
-	y := c ^ a&^b
-	z := a ^ b&^c
-
-	y ^= 0x6666666666666666
-	z ^= 0xaaaaaaaaaaaaaaaa
-	y = y>>21 ^ y<<43
-	z = z<<21 ^ z>>43
-
-	state[0] = y ^ z&^x
-	state[1] = z ^ x&^y
-	state[2] = x ^ y&^z
+	state[0] = a
+	state[1] = b
+	state[2] = c
 }
 
-// Get from rng
+// Get random 64 bits from rng
 //go:norace
+//go:nosplit
 func Get() uint64 {
 	a := state[0]
 	b := state[1]
 	c := state[2]
+	r := a
 
-	b ^= 0x5555555555555555
-	c ^= 0x3333333333333333
-	b = b>>21 ^ b<<43
-	c = c<<21 ^ c>>43
+	a, b, c = mix(a, b, c, xm1, xm2)
+	a, b, c = mix(a, b, c, xm3, xm4)
 
-	x := b ^ c&^a
-	y := c ^ a&^b
-	z := a ^ b&^c
-
-	y ^= 0x6666666666666666
-	z ^= 0xaaaaaaaaaaaaaaaa
-	y = y>>21 ^ y<<43
-	z = z<<21 ^ z>>43
-
-	state[0] = y ^ z&^x
-	state[1] = z ^ x&^y
-	state[2] = x ^ y&^z
-	return a
+	state[0] = a
+	state[1] = b
+	state[2] = c
+	return r
 }
 
+// putS inserts a pointer & a string into rng
 func putS(s string) {
 	lu := sixb.StoU4(s)
 	if len(lu) <= 0 {
@@ -83,6 +87,7 @@ func putS(s string) {
 	}
 }
 
+// putLs inserts a pointer & sum of strings into rng
 func putLs(ls []string) {
 	if len(ls) <= 0 {
 		return
