@@ -6,50 +6,33 @@
 
 package rng
 
-import (
-	"math"
-	"unsafe"
-)
+import "math"
 
-func u2f(i uint64) float64 {
-	return *(*float64)(unsafe.Pointer(&i))
-}
-
-// One returns a uniformly distributed random number from (0,1)
+// One returns a uniformly distributed random number from half-open interval [0, 1)
 func One() float64 {
-	var i uint64
-	// set sign=exponent=0 to get double from [1,2)
-	for i == 0 { // avoid 1
-		i = Get() << 12
-	}
-	i |= 1<<10 - 1
-	i = i>>12 ^ i<<52
-
-	return u2f(i) - 1
+	i := int64(Get() >> 11) // [0, 2^53)
+	return float64(i) / (1 << 53)
 }
 
-// Two returns a uniformly distributed random number from (-1,1)
+// Two returns a uniformly distributed random number from half-open interval [-1, 1)
 func Two() float64 {
-	// set exponent=0 to get double from ±[1,2)
-	i := Get()
-	s := i & 1
-	i <<= 11
-	s <<= 11
-	i |= 1<<10 - 1
-	s |= 1<<10 - 1
-	i = i>>12 ^ i<<52
-	s = s>>12 ^ s<<52 // s = sign(i)
-
-	return u2f(i) - u2f(s)
+	i := int64(Get()) >> 10 // [-2^53, 2^53)
+	return float64(i) / (1 << 53)
 }
 
 // Exp returns an exponentially distributed random number with unit mean
+//go:nosplit
 func Exp() float64 {
-	return -math.Log(One())
+	var x float64
+	for x == 0 {
+		x = One()
+	}
+	return -math.Log(x)
 }
 
 // Normal returns two independent & normally distributed
 // random numbers with zero mean and unit variance
+//go:nosplit
 func Normal() (float64, float64) {
 	var x, y, k float64
 	for !(0 < k && k < 1) {
