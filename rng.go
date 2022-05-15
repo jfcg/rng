@@ -19,11 +19,11 @@ import (
 var state [3]uint64
 
 const (
-	// xor masks: equal amount of 1s & 0s
+	// xor masks: equal amount of 1s & 0s with periods: 2, 4, 8, 16
 	xm1 = 0x5555555555555555
 	xm2 = 0x3333333333333333
-	xm3 = xm2 << 1
-	xm4 = xm1 << 1
+	xm3 = 0x3535353535353535
+	xm4 = 0x3355335533553355
 
 	// rotatiom amount
 	rta = 21 // 64 / 3
