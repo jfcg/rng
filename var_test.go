@@ -23,8 +23,7 @@ func testfn(t *testing.T, fn func() (float64, float64),
 	for i := Large; i > 0; i-- {
 
 		x, y := fn()
-		if x != x || x <= lo || x >= hi ||
-			y != y || y <= lo || y >= hi {
+		if !(lo <= x && x < hi) || !(lo <= y && y < hi) {
 			t.Fatalf("rng.%s: bad output: %f, %f\n", name, x, y)
 		}
 		if x > med {
