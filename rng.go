@@ -19,17 +19,19 @@ import (
 var state [3]uint64
 
 const (
-	// xor masks: equal amount of 1s & 0s with periods: 2, 4, 8, 16
+	// xor masks: equal amount of 1s & 0s with periods: 2, 4, 8, 16, 32, 64
 	xm1 = 0x5555555555555555
 	xm2 = 0x3333333333333333
 	xm3 = 0x3535353535353535
 	xm4 = 0x3355335533553355
+	xm5 = 0x3333555533335555
+	xm6 = 0x3333333355555555
 
-	// rotatiom amount
+	// rotation amount
 	rta = 21 // 64 / 3
 )
 
-// mix(u,v) is a permutation of state (a,b,c) consisting of
+// mix(u,v) is a permutation (bijection) on state (a,b,c) consisting of
 // an affine map & the nonlinear chi map. inlined.
 func mix(a, b, c, u, v uint64) (x, y, z uint64) {
 	b ^= u
@@ -51,6 +53,7 @@ func Put(u uint64) {
 
 	a, b, c = mix(a, b, c, xm1, xm2)
 	a, b, c = mix(a, b, c, xm3, xm4)
+	a, b, c = mix(a, b, c, xm5, xm6)
 
 	state[0] = a
 	state[1] = b
@@ -68,6 +71,7 @@ func Get() uint64 {
 
 	a, b, c = mix(a, b, c, xm1, xm2)
 	a, b, c = mix(a, b, c, xm3, xm4)
+	a, b, c = mix(a, b, c, xm5, xm6)
 
 	state[0] = a
 	state[1] = b
