@@ -39,6 +39,34 @@ func BenchmarkAltGet(b *testing.B) {
 	}
 }
 
+func BenchmarkModn(b *testing.B) {
+	var sum uint64
+	n := uint64(b.N)
+	for i := n; i > 0; i-- {
+		sum += rng.Modn(n)
+	}
+}
+
+func BenchmarkStdModn(b *testing.B) {
+	var sum int64
+	n := int64(b.N)
+	mr := rand.New(rand.NewSource(n))
+	b.ResetTimer()
+	for i := n; i > 0; i-- {
+		sum += mr.Int63n(n)
+	}
+}
+
+func BenchmarkAltModn(b *testing.B) {
+	var sum uint64
+	n := uint64(b.N)
+	ar := altr.New(altr.NewSource(n))
+	b.ResetTimer()
+	for i := n; i > 0; i-- {
+		sum += ar.Uint64n(n)
+	}
+}
+
 func BenchmarkExp(b *testing.B) {
 	var sum float64
 	for i := b.N; i > 0; i-- {

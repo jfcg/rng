@@ -25,3 +25,13 @@ func TestGet(t *testing.T) {
 		}
 	}
 }
+
+func TestModn(t *testing.T) {
+	for n := uint64(0); n <= 10*Small; n++ {
+		for i := Small; i > 0; i-- {
+			if r := Modn(n); r+1 > n {
+				t.Fatal("rng.Modn: invalid return", r, "for n=", n)
+			}
+		}
+	}
+}
