@@ -67,6 +67,33 @@ func BenchmarkAltModn(b *testing.B) {
 	}
 }
 
+const permN = 1000
+
+func BenchmarkPerm(b *testing.B) {
+	var sum uint32
+	for i := b.N; i > 0; i-- {
+		sum += rng.Permute(permN)[0]
+	}
+}
+
+func BenchmarkStdPerm(b *testing.B) {
+	var sum int
+	mr := rand.New(rand.NewSource(int64(b.N)))
+	b.ResetTimer()
+	for i := b.N; i > 0; i-- {
+		sum += mr.Perm(permN)[0]
+	}
+}
+
+func BenchmarkAltPerm(b *testing.B) {
+	var sum int
+	ar := altr.New(altr.NewSource(uint64(b.N)))
+	b.ResetTimer()
+	for i := b.N; i > 0; i-- {
+		sum += ar.Perm(permN)[0]
+	}
+}
+
 func BenchmarkExp(b *testing.B) {
 	var sum float64
 	for i := b.N; i > 0; i-- {
