@@ -171,6 +171,34 @@ func BenchmarkAltNormal(b *testing.B) {
 	}
 }
 
+const readN = 255
+
+func BenchmarkRead(b *testing.B) {
+	buf := make([]byte, readN)
+	b.ResetTimer()
+	for i := b.N; i > 0; i-- {
+		_, _ = rng.Read(buf)
+	}
+}
+
+func BenchmarkStdRead(b *testing.B) {
+	buf := make([]byte, readN)
+	mr := rand.New(rand.NewSource(int64(b.N)))
+	b.ResetTimer()
+	for i := b.N; i > 0; i-- {
+		_, _ = mr.Read(buf)
+	}
+}
+
+func BenchmarkAltRead(b *testing.B) {
+	buf := make([]byte, readN)
+	ar := altr.New(altr.NewSource(uint64(b.N)))
+	b.ResetTimer()
+	for i := b.N; i > 0; i-- {
+		_, _ = ar.Read(buf)
+	}
+}
+
 func BenchmarkTwo(b *testing.B) {
 	var sum float64
 	for i := b.N; i > 0; i-- {

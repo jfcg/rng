@@ -7,8 +7,10 @@
 package rng
 
 import (
+	"bytes"
 	"sort"
 	"testing"
+	"unsafe"
 )
 
 func TestGet(t *testing.T) {
@@ -94,4 +96,39 @@ func TestPermute(t *testing.T) {
 
 	permTest2(t, ls)
 	permTest2(t, lu)
+}
+
+const readN = 255
+
+func readTest(t *testing.T) []byte {
+
+	buf := make([]byte, readN)
+	n, err := Read(buf)
+	if n != readN || err != nil {
+		t.Fatal("rng.Read: bad return!")
+	}
+
+	if *(*uint64)(unsafe.Pointer(&buf[0])) == 0 {
+		t.Fatal("rng.Read: unlikely zero first 8 bytes!")
+	}
+
+	i := len(buf) - 7
+	for ; i < len(buf); i++ {
+		if buf[i] != 0 {
+			break
+		}
+	}
+	if i >= len(buf) {
+		t.Fatal("rng.Read: unlikely zero last 7 bytes!")
+	}
+	return buf
+}
+
+func TestRead(t *testing.T) {
+	buf1 := readTest(t)
+	buf2 := readTest(t)
+
+	if bytes.Equal(buf1, buf2) {
+		t.Fatal("rng.Read: unlikely equal buffers!")
+	}
 }
