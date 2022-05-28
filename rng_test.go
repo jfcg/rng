@@ -38,7 +38,7 @@ func TestModn(t *testing.T) {
 	}
 }
 
-const permN = 1000
+const permN = 100
 
 func permTest(t *testing.T) []uint32 {
 	ls := Permute(permN)

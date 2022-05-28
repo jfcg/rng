@@ -15,159 +15,138 @@ import (
 )
 
 func BenchmarkGet(b *testing.B) {
-	var sum uint64
 	for i := b.N; i > 0; i-- {
-		sum += rng.Get()
+		_ = rng.Get()
 	}
 }
 
 func BenchmarkStdGet(b *testing.B) {
-	var sum uint64
 	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += mr.Uint64()
+		_ = mr.Uint64()
 	}
 }
 
 func BenchmarkAltGet(b *testing.B) {
-	var sum uint64
 	ar := altr.New(altr.NewSource(uint64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += ar.Uint64()
+		_ = ar.Uint64()
 	}
 }
 
 func BenchmarkModn(b *testing.B) {
-	var sum uint64
-	n := uint64(b.N)
-	for i := n; i > 0; i-- {
-		sum += rng.Modn(n)
+	for i := uint64(b.N); i > 0; i-- {
+		_ = rng.Modn(i)
 	}
 }
 
 func BenchmarkStdModn(b *testing.B) {
-	var sum int64
 	n := int64(b.N)
 	mr := rand.New(rand.NewSource(n))
 	b.ResetTimer()
 	for i := n; i > 0; i-- {
-		sum += mr.Int63n(n)
+		_ = mr.Int63n(i)
 	}
 }
 
 func BenchmarkAltModn(b *testing.B) {
-	var sum uint64
 	n := uint64(b.N)
 	ar := altr.New(altr.NewSource(n))
 	b.ResetTimer()
 	for i := n; i > 0; i-- {
-		sum += ar.Uint64n(n)
+		_ = ar.Uint64n(i)
 	}
 }
 
-const permN = 1000
+const permN = 100
 
 func BenchmarkPerm(b *testing.B) {
-	var sum uint32
 	for i := b.N; i > 0; i-- {
-		sum += rng.Permute(permN)[0]
+		_ = rng.Permute(permN)
 	}
 }
 
 func BenchmarkStdPerm(b *testing.B) {
-	var sum int
 	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += mr.Perm(permN)[0]
+		_ = mr.Perm(permN)
 	}
 }
 
 func BenchmarkAltPerm(b *testing.B) {
-	var sum int
 	ar := altr.New(altr.NewSource(uint64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += ar.Perm(permN)[0]
+		_ = ar.Perm(permN)
 	}
 }
 
 func BenchmarkExp(b *testing.B) {
-	var sum float64
 	for i := b.N; i > 0; i-- {
-		sum += rng.Exp()
+		_ = rng.Exp()
 	}
 }
 
 func BenchmarkStdExp(b *testing.B) {
-	var sum float64
 	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += mr.ExpFloat64()
+		_ = mr.ExpFloat64()
 	}
 }
 
 func BenchmarkAltExp(b *testing.B) {
-	var sum float64
 	ar := altr.New(altr.NewSource(uint64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += ar.ExpFloat64()
+		_ = ar.ExpFloat64()
 	}
 }
 
 func BenchmarkOne(b *testing.B) {
-	var sum float64
 	for i := b.N; i > 0; i-- {
-		sum += rng.One()
+		_ = rng.One()
 	}
 }
 
 func BenchmarkStdOne(b *testing.B) {
-	var sum float64
 	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += mr.Float64()
+		_ = mr.Float64()
 	}
 }
 
 func BenchmarkAltOne(b *testing.B) {
-	var sum float64
 	ar := altr.New(altr.NewSource(uint64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += ar.Float64()
+		_ = ar.Float64()
 	}
 }
 
 func BenchmarkNormal(b *testing.B) {
-	var sum1, sum2 float64
 	for i := b.N; i > 0; i-- {
-		x, y := rng.Normal()
-		sum1 += x
-		sum2 += y
+		_, _ = rng.Normal()
 	}
 }
 
 func BenchmarkStdNormal(b *testing.B) {
-	var sum float64
 	mr := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += mr.NormFloat64()
+		_ = mr.NormFloat64()
 	}
 }
 
 func BenchmarkAltNormal(b *testing.B) {
-	var sum float64
 	ar := altr.New(altr.NewSource(uint64(b.N)))
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		sum += ar.NormFloat64()
+		_ = ar.NormFloat64()
 	}
 }
 
@@ -200,8 +179,7 @@ func BenchmarkAltRead(b *testing.B) {
 }
 
 func BenchmarkTwo(b *testing.B) {
-	var sum float64
 	for i := b.N; i > 0; i-- {
-		sum += rng.Two()
+		_ = rng.Two()
 	}
 }
