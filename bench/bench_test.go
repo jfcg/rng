@@ -60,11 +60,13 @@ func BenchmarkAltModn(b *testing.B) {
 	}
 }
 
-const permN = 100
+const permN = 200
 
 func BenchmarkPerm(b *testing.B) {
+	ls := make([]uint32, permN)
+	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		_ = rng.Permute(permN)
+		rng.Permute(ls)
 	}
 }
 

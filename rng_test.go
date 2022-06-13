@@ -41,7 +41,8 @@ func TestModn(t *testing.T) {
 const permN = 100
 
 func permTest(t *testing.T) []uint32 {
-	ls := Permute(permN)
+	ls := make([]uint32, permN)
+	Permute(ls)
 	if len(ls) != permN {
 		t.Fatal("rng.Permute: invalid permutation length!")
 	}

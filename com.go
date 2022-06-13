@@ -39,18 +39,19 @@ func Modn(n uint64) uint64 {
 	return v % n
 }
 
-// Permute returns a random permutation of the integers 0..n-1
-// for n ≥ 2, or returns a 0 for n = 1 or nil for n = 0
-func Permute(n uint32) []uint32 {
-	if n < 2 {
-		if n == 0 {
-			return nil
-		}
-		return []uint32{0}
+// Permute fills ls with a random permutation of the integers 0..len(ls)-1.
+// It does not fill beyond 2^32 integers.
+func Permute(ls []uint32) {
+	n := uint64(len(ls))
+	if n == 0 {
+		return
+	}
+	if n > 1<<32 {
+		n = 1 << 32
 	}
 
-	ls := make([]uint32, n)
-	for i := uint64(1); i < uint64(n); i++ {
+	ls[0] = 0
+	for i := uint64(1); i < n; i++ {
 
 		k := Modn(i + 1)
 		if k < i {
@@ -58,5 +59,4 @@ func Permute(n uint32) []uint32 {
 		}
 		ls[k] = uint32(i)
 	}
-	return ls
 }
