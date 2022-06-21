@@ -158,7 +158,7 @@ func BenchmarkRead(b *testing.B) {
 	buf := make([]byte, readN)
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
-		_, _ = rng.Read(buf)
+		rng.Fill(buf)
 	}
 }
 

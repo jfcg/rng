@@ -12,8 +12,8 @@ import (
 	"github.com/jfcg/sixb"
 )
 
-// Read fills buf with random bytes and returns len(buf), nil
-func Read(buf []byte) (int, error) {
+// Fill buf with random bytes
+func Fill(buf []byte) {
 	// fill 8 bytes at a time
 	ls := sixb.BtoU8(buf)
 	for i := 0; i < len(ls); i++ {
@@ -26,5 +26,4 @@ func Read(buf []byte) (int, error) {
 		// fill 1 to 7 remaining bytes
 		copy(buf[r:], src)
 	}
-	return len(buf), nil
 }

@@ -104,13 +104,10 @@ const readN = 255
 func readTest(t *testing.T) []byte {
 
 	buf := make([]byte, readN)
-	n, err := Read(buf)
-	if n != readN || err != nil {
-		t.Fatal("rng.Read: bad return!")
-	}
+	Fill(buf)
 
 	if *(*uint64)(unsafe.Pointer(&buf[0])) == 0 {
-		t.Fatal("rng.Read: unlikely zero first 8 bytes!")
+		t.Fatal("rng.Fill: unlikely zero first 8 bytes!")
 	}
 
 	i := len(buf) - 7
@@ -120,16 +117,16 @@ func readTest(t *testing.T) []byte {
 		}
 	}
 	if i >= len(buf) {
-		t.Fatal("rng.Read: unlikely zero last 7 bytes!")
+		t.Fatal("rng.Fill: unlikely zero last 7 bytes!")
 	}
 	return buf
 }
 
-func TestRead(t *testing.T) {
+func TestFill(t *testing.T) {
 	buf1 := readTest(t)
 	buf2 := readTest(t)
 
 	if bytes.Equal(buf1, buf2) {
-		t.Fatal("rng.Read: unlikely equal buffers!")
+		t.Fatal("rng.Fill: unlikely equal buffers!")
 	}
 }
