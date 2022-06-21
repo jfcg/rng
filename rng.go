@@ -4,8 +4,8 @@
 	file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-// Package rng implements a cheap, fast and hard-to-predict random number generator
-// without locks as a feature. Not suitable for cryptographic applications.
+// Package rng is a compact, fast, sponge-based, lockless and hard-to-predict
+// random number generator. Not suitable for cryptographic applications.
 package rng
 
 import (
