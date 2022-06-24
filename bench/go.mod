@@ -3,7 +3,7 @@ module github.com/jfcg/rng/bench
 go 1.17
 
 require (
-	github.com/jfcg/rng v0.10.0
+	github.com/jfcg/rng v1.0.1
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d
 )
 

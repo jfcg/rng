@@ -80,6 +80,7 @@ func Get() uint64 {
 }
 
 // putS inserts a pointer & a string into rng
+//go:nosplit
 func putS(s string) {
 	lu := sixb.StoU4(s)
 	if len(lu) <= 0 {
@@ -92,6 +93,7 @@ func putS(s string) {
 }
 
 // putLs inserts a pointer & sum of strings into rng
+//go:nosplit
 func putLs(ls []string) {
 	if len(ls) <= 0 {
 		return

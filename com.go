@@ -10,6 +10,7 @@ const maxu uint64 = 1<<64 - 1
 
 // Modn returns random integer from 0..n-1 for n ≥ 2, or
 // returns n-1 for n < 2. This is more uniform than Get() % n.
+//go:nosplit
 func Modn(n uint64) uint64 {
 	k := n - 1
 	if n&k == 0 { // n=0 or power of 2 ?
@@ -41,6 +42,7 @@ func Modn(n uint64) uint64 {
 
 // Permute fills ls with a random permutation of the integers 0..len(ls)-1.
 // It does not fill beyond 2^32 integers.
+//go:nosplit
 func Permute(ls []uint32) {
 	n := uint64(len(ls))
 	if n == 0 {
