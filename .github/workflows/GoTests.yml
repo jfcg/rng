@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Tests
@@ -16,10 +19,10 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v3
       with:
-        go-version: '1.17'
+        go-version: '1.19'
 
     - name: Run Tests
-      run: go test -v
+      run: go test -timeout 20m -v
 
     - name: Run Benchmarks
-      run: cd bench && go test -bench .
+      run: cd bench && go test -timeout 20m -v -run ^$ -bench . -benchmem
