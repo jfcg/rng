@@ -25,4 +25,4 @@ jobs:
       run: go test -timeout 20m -v
 
     - name: Run Benchmarks
-      run: cd bench && go test -timeout 20m -v -run ^$ -bench . -benchmem
+      run: cd bench && go test -timeout 20m -run ^$ -bench . -benchmem

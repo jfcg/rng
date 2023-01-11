@@ -130,6 +130,12 @@ func BenchmarkAltOne(b *testing.B) {
 	}
 }
 
+func BenchmarkTwo(b *testing.B) {
+	for i := b.N; i > 0; i-- {
+		_ = rng.Two()
+	}
+}
+
 func BenchmarkNormal(b *testing.B) {
 	for i := b.N; i > 0; i-- {
 		_, _ = rng.Normal()
@@ -154,7 +160,7 @@ func BenchmarkAltNormal(b *testing.B) {
 
 const readN = 255
 
-func BenchmarkRead(b *testing.B) {
+func BenchmarkFill(b *testing.B) {
 	buf := make([]byte, readN)
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
@@ -177,11 +183,5 @@ func BenchmarkAltRead(b *testing.B) {
 	b.ResetTimer()
 	for i := b.N; i > 0; i-- {
 		_, _ = ar.Read(buf)
-	}
-}
-
-func BenchmarkTwo(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_ = rng.Two()
 	}
 }
