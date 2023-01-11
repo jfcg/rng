@@ -13,6 +13,7 @@ import (
 )
 
 // Fill buf with random bytes
+//
 //go:nosplit
 func Fill(buf []byte) {
 	// fill 8 bytes at a time

@@ -4,8 +4,10 @@
 	file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-// Package rng is a compact, fast, sponge-based, lockless and hard-to-predict
+// Package rng is a compact, fast, [sponge]-based, lockless and hard-to-predict
 // random number generator. Not suitable for cryptographic applications.
+//
+// [sponge]: https://en.wikipedia.org/wiki/Sponge_function
 package rng
 
 import (
@@ -43,6 +45,7 @@ func mix(a, b, c, u, v uint64) (x, y, z uint64) {
 }
 
 // Put u into rng
+//
 //go:norace
 //go:nosplit
 func Put(u uint64) {
@@ -61,6 +64,7 @@ func Put(u uint64) {
 }
 
 // Get random 64 bits from rng
+//
 //go:norace
 //go:nosplit
 func Get() uint64 {
@@ -80,6 +84,7 @@ func Get() uint64 {
 }
 
 // putS inserts a pointer & a string into rng
+//
 //go:nosplit
 func putS(s string) {
 	lu := sixb.StoU4(s)
@@ -93,6 +98,7 @@ func putS(s string) {
 }
 
 // putLs inserts a pointer & sum of strings into rng
+//
 //go:nosplit
 func putLs(ls []string) {
 	if len(ls) <= 0 {
@@ -106,6 +112,7 @@ func putLs(ls []string) {
 	putS(sum)
 }
 
+//go:nosplit
 func init() {
 	// insert various data into rng
 	now := time.Now()

@@ -3,8 +3,8 @@
 The latest tagged version is supported.
 
 ### Security Reports
-**Do not create an issue** to report a security problem. Instead please send email to
-`jfcgaussATgmail`.
+**Do not disclose** security problems in issues or pull requests. Instead please send email to
+[the author](mailto:jfcgauss@gmail.com).
 
 ### Incident Response Process
 In case an incident is discovered or reported, the author will, as much as resources permit:

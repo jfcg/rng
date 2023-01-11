@@ -21,6 +21,7 @@ func Two() float64 {
 }
 
 // Exp returns an exponentially distributed random number with unit mean
+//
 //go:nosplit
 func Exp() float64 {
 	var x float64
@@ -32,6 +33,7 @@ func Exp() float64 {
 
 // Normal returns two independent & normally distributed
 // random numbers with zero mean and unit variance
+//
 //go:nosplit
 func Normal() (float64, float64) {
 	var x, y, k float64
