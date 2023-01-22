@@ -1,14 +1,14 @@
-name: "Go"
+name: "Golang"
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  tests:
     name: Tests
     runs-on: ubuntu-latest
 
