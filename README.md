@@ -15,5 +15,7 @@ alt| 64|  48
 `rng` API adheres to [semantic](https://semver.org) versioning. 
 `rng` is not suitable for cryptographic applications.
 
-See also [Contributing](./.github/CONTRIBUTING.md), [Security](./.github/SECURITY.md)
-and [Support](./.github/SUPPORT.md) guides.
+### Support
+See [Contributing](./.github/CONTRIBUTING.md), [Security](./.github/SECURITY.md) and [Support](./.github/SUPPORT.md) guides. Also if you use rng and like it, please support via [Github Sponsors](https://github.com/sponsors/jfcg) or:
+- BTC:`bc1qr8m7n0w3xes6ckmau02s47a23e84umujej822e`
+- ETH:`0x3a844321042D8f7c5BB2f7AB17e20273CA6277f6`
