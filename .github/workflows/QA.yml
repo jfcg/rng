@@ -16,7 +16,6 @@ env:
 jobs:
   Tests:
     strategy:
-      max-parallel: 1
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
         go: [ oldstable, stable ]
@@ -30,11 +29,22 @@ jobs:
         go-version: ${{ matrix.go }}
     - name: Run Tests
       run: go test -timeout 5m -v
+
+  Benchmarks:
+    needs: Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: stable
     - name: Run Benchmarks
       run: cd bench && go test -timeout 5m -run ^$ -bench . -benchmem
 
   Analysis:
-    needs: Tests
+    needs: Benchmarks
     permissions:
       actions: read
       security-events: write
