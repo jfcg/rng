@@ -19,41 +19,36 @@ jobs:
       max-parallel: 1
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-        go: [ '1.19', '1.20' ]
+        go: [ oldstable, stable ]
     runs-on: ${{ matrix.os }}
-
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go }}
     - name: Run Tests
-      run: go test -timeout 1h -v
+      run: go test -timeout 5m -v
     - name: Run Benchmarks
-      run: cd bench && go test -timeout 1h -run ^$ -bench . -benchmem
+      run: cd bench && go test -timeout 5m -run ^$ -bench . -benchmem
 
   Analysis:
     needs: Tests
     permissions:
       actions: read
       security-events: write
-    strategy:
-      matrix:
-        go: [ '1.19', '1.20' ]
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v5
       with:
-        go-version: ${{ matrix.go }}
+        go-version: stable
     - name: Initialize
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: go
     - name: Analyze
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
