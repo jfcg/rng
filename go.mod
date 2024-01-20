@@ -1,5 +1,5 @@
 module github.com/jfcg/rng
 
-go 1.17
+go 1.19
 
-require github.com/jfcg/sixb v1.3.8
+require github.com/jfcg/sixb v1.4.0
