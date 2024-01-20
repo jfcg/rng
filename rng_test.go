@@ -28,13 +28,23 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func TestModn(t *testing.T) {
-	for n := uint64(0); n <= 10*Small; n++ {
-		for i := Small; i > 0; i-- {
-			if r := Modn(n); r+1 > n {
-				t.Fatal("rng.Modn: invalid return", r, "for n=", n)
-			}
+func testn(t *testing.T, n uint64) {
+	for i := Small; i >= 0; i-- {
+		if r := Modn(n); r+1 > n {
+			t.Fatal("rng.Modn: invalid return", r, "for n=", n)
 		}
+	}
+}
+
+func TestModn(t *testing.T) {
+	for n := ^uint64(10 * Small); n != 10*Small; n++ {
+		testn(t, n)
+	}
+	for n := uint64(1<<63 - 10*Small); n != 1<<63+10*Small; n++ {
+		testn(t, n)
+	}
+	for n := maxu/3 + 1; n != maxu/3+10*Small; n++ {
+		testn(t, n)
 	}
 }
 
@@ -94,6 +104,13 @@ func TestPermute(t *testing.T) {
 
 	permTest2(t, ls)
 	permTest2(t, lu)
+
+	Permute(nil) // should be no-op
+	ls = []uint32{3}
+	Permute(ls)
+	if ls[0] != 0 {
+		t.Fatal("rng.Permute: should store single zero")
+	}
 }
 
 const readN = 255
