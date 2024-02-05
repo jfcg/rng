@@ -27,8 +27,8 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: ${{ matrix.go }}
-    - name: Run Tests
-      run: go test -timeout 5m -v
+    - name: Run Tests with Coverage
+      run:  go test -timeout 5m -v -cover
 
   Benchmarks:
     needs: Tests
