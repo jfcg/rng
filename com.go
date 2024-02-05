@@ -6,7 +6,7 @@
 
 package rng
 
-const maxu uint64 = 1<<64 - 1
+const maxU8 uint64 = 1<<64 - 1
 
 // Modn returns a random integer from 0..n-1 for n ≥ 2, and
 // returns n-1 for n < 2. This is more uniform than [Get]() % n.
@@ -31,9 +31,9 @@ func Modn(n uint64) uint64 {
 	}
 
 	// mostly avoid one division
-	if v > maxu-n {
+	if v > maxU8-n {
 		// largest multiple of n < 2^64
-		lastn := maxu - maxu%n
+		lastn := maxU8 - maxU8%n
 		for v >= lastn {
 			v = Get()
 		}

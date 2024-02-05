@@ -14,8 +14,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	ls := make([]uint64, Large)
-
+	ls := make([]uint64, 1<<26) // 0.5 GiB
 	for i := range ls {
 		ls[i] = Get()
 	}
@@ -23,36 +22,43 @@ func TestGet(t *testing.T) {
 
 	for i := len(ls) - 1; i > 0; i-- {
 		if ls[i] == ls[i-1] {
-			t.Fatal("rng.Get: collision!")
+			t.Error("rng.Get: unexpected collision!")
 		}
 	}
 }
 
-func testn(t *testing.T, n uint64) {
-	for i := Small; i >= 0; i-- {
-		if r := Modn(n); r+1 > n {
-			t.Fatal("rng.Modn: invalid return", r, "for n=", n)
-		}
-	}
-}
+const (
+	SampleN  = 256
+	HalfN    = SampleN / 2
+	QuarterN = SampleN / 4
+	Many     = 40 * SampleN
+)
 
 func TestModn(t *testing.T) {
-	for n := ^uint64(10 * Small); n != 10*Small; n++ {
-		testn(t, n)
-	}
-	for n := uint64(1<<63 - 10*Small); n != 1<<63+10*Small; n++ {
-		testn(t, n)
-	}
-	for n := maxu/3 + 1; n != maxu/3+10*Small; n++ {
-		testn(t, n)
+	ranges := []uint64{
+		^uint64(Many), Many,
+		1<<63 - Many, 1<<63 + Many,
+		maxU8/3 + 1, maxU8/3 + Many}
+
+	for r := len(ranges) - 1; r > 0; r -= 2 {
+		for n := ranges[r-1]; n != ranges[r]; n++ {
+			for i := Many; i > 0; i-- {
+				if k := Modn(n); k+1 > n {
+					t.Fatal("rng.Modn: invalid return", k, "for n:", n)
+				}
+			}
+		}
 	}
 }
 
-const permN = 100
+const minPerm = 10
 
-func permTest(t *testing.T) []uint32 {
-	ls := make([]uint32, permN)
+func permTest(t *testing.T, n int) []uint32 {
+	ls := make([]uint32, n)
 	Permute(ls)
+	if n < minPerm {
+		return ls
+	}
 
 	i := len(ls) - 1
 	for ; i >= 0; i-- {
@@ -61,7 +67,7 @@ func permTest(t *testing.T) []uint32 {
 		}
 	}
 	if i < 0 {
-		t.Fatal("rng.Permute: unlikely identity permutation!")
+		t.Error("rng.Permute: unlikely identity permutation!")
 	}
 
 	i = len(ls) - 1
@@ -72,13 +78,12 @@ func permTest(t *testing.T) []uint32 {
 		k++
 	}
 	if i < 0 {
-		t.Fatal("rng.Permute: unlikely inverse permutation!")
+		t.Error("rng.Permute: unlikely inverse permutation!")
 	}
 	return ls
 }
 
 func permTest2(t *testing.T, ls []uint32) {
-
 	sort.Slice(ls, func(i, k int) bool { return ls[i] < ls[k] })
 
 	for i := len(ls) - 1; i >= 0; i-- {
@@ -89,58 +94,48 @@ func permTest2(t *testing.T, ls []uint32) {
 }
 
 func TestPermute(t *testing.T) {
-	ls := permTest(t)
-	lu := permTest(t)
+	for n := 0; n <= Many; n++ {
+		ls := permTest(t, n)
+		lu := permTest(t, n)
 
-	i := len(ls) - 1
-	for ; i >= 0; i-- {
-		if ls[i] != lu[i] {
-			break
+		if n >= minPerm {
+			i := len(ls) - 1
+			for ; i >= 0; i-- {
+				if ls[i] != lu[i] {
+					break
+				}
+			}
+			if i < 0 {
+				t.Error("rng.Permute: unlikely equal permutations!")
+			}
 		}
-	}
-	if i < 0 {
-		t.Fatal("rng.Permute: unlikely equal permutations!")
-	}
 
-	permTest2(t, ls)
-	permTest2(t, lu)
-
-	Permute(nil) // should be no-op
-	ls = []uint32{3}
-	Permute(ls)
-	if ls[0] != 0 {
-		t.Fatal("rng.Permute: should store single zero")
+		permTest2(t, ls)
+		permTest2(t, lu)
 	}
 }
 
-const readN = 255
-
-func readTest(t *testing.T) []byte {
-
-	buf := make([]byte, readN)
+func fillTest(t *testing.T, n int) []byte {
+	buf := make([]byte, n)
 	Fill(buf)
 
-	if *(*uint64)(unsafe.Pointer(&buf[0])) == 0 {
-		t.Fatal("rng.Fill: unlikely zero first 8 bytes!")
-	}
-
-	i := len(buf) - 7
-	for ; i < len(buf); i++ {
-		if buf[i] != 0 {
-			break
+	if n >= 16 {
+		a := *(*uint64)(unsafe.Pointer(&buf[0]))
+		b := *(*uint64)(unsafe.Pointer(&buf[n-8]))
+		if a == 0 && b == 0 || ^a == 0 && ^b == 0 {
+			t.Error("rng.Fill: unlikely all zeros/ones at start/end!")
 		}
-	}
-	if i >= len(buf) {
-		t.Fatal("rng.Fill: unlikely zero last 7 bytes!")
 	}
 	return buf
 }
 
 func TestFill(t *testing.T) {
-	buf1 := readTest(t)
-	buf2 := readTest(t)
+	for n := 0; n <= Many; n++ {
+		buf1 := fillTest(t, n)
+		buf2 := fillTest(t, n)
 
-	if bytes.Equal(buf1, buf2) {
-		t.Fatal("rng.Fill: unlikely equal buffers!")
+		if n >= 8 && bytes.Equal(buf1, buf2) {
+			t.Error("rng.Fill: unlikely equal buffers!")
+		}
 	}
 }
