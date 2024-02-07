@@ -1,4 +1,4 @@
-## rng [![go.dev ref](https://pkg.go.dev/static/frontend/badge/badge.svg)](https://pkg.go.dev/github.com/jfcg/rng#pkg-overview) [![go report card](https://goreportcard.com/badge/github.com/jfcg/rng)](https://goreportcard.com/report/github.com/jfcg/rng) [![OpenSSF badge](https://www.bestpractices.dev/projects/8318/badge)](https://www.bestpractices.dev/projects/8318)
+## rng [![go.dev ref](https://pkg.go.dev/static/frontend/badge/badge.svg)](https://pkg.go.dev/github.com/jfcg/rng#pkg-overview) [![report card](https://goreportcard.com/badge/github.com/jfcg/rng)](https://goreportcard.com/report/github.com/jfcg/rng) [![coverage](./.github/cover.svg)](https://github.com/jfcg/rng/actions/workflows/QA.yml) [![OpenSSF badge](https://www.bestpractices.dev/projects/8318/badge)](https://www.bestpractices.dev/projects/8318)
 
 Package `rng` is a compact, fast, [sponge](https://en.wikipedia.org/wiki/Sponge_function)-based,
 lockless and hard-to-predict random number generator. See `Green tick > QA / Tests > Details` for
