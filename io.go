@@ -9,7 +9,7 @@ package rng
 import (
 	"unsafe"
 
-	"github.com/jfcg/sixb"
+	"github.com/jfcg/sixb/v2"
 )
 
 // Fill buf with random bytes
@@ -17,7 +17,7 @@ import (
 //go:nosplit
 func Fill(buf []byte) {
 	// fill 8 bytes at a time
-	ls := sixb.BtoU8(buf)
+	ls := sixb.Slice[uint64](buf)
 	for i := 0; i < len(ls); i++ {
 		ls[i] = Get()
 	}

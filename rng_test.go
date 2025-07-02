@@ -10,7 +10,8 @@ import (
 	"bytes"
 	"sort"
 	"testing"
-	"unsafe"
+
+	"github.com/jfcg/sixb/v2"
 )
 
 func TestGet(t *testing.T) {
@@ -120,8 +121,9 @@ func fillTest(t *testing.T, n int) []byte {
 	Fill(buf)
 
 	if n >= 16 {
-		a := *(*uint64)(unsafe.Pointer(&buf[0]))
-		b := *(*uint64)(unsafe.Pointer(&buf[n-8]))
+		lu := sixb.Slice[uint64](buf)
+		a := lu[0]
+		b := lu[len(lu)-1]
 		if a == 0 && b == 0 || ^a == 0 && ^b == 0 {
 			t.Error("rng.Fill: unlikely all zeros/ones at start/end!")
 		}
