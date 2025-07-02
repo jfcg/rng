@@ -12,10 +12,10 @@ package rng
 
 import (
 	"os"
+	"strings"
 	"time"
-	"unsafe"
 
-	"github.com/jfcg/sixb"
+	"github.com/jfcg/sixb/v2"
 )
 
 var state [3]uint64
@@ -44,11 +44,11 @@ func mix(a, b, c, u, v uint64) (x, y, z uint64) {
 	return b ^ c&^a, c ^ a&^b, a ^ b&^c
 }
 
-// Put u into rng
+// put u into rng
 //
 //go:norace
 //go:nosplit
-func Put(u uint64) {
+func put(u uint64) {
 	a := state[0]
 	b := state[1]
 	c := state[2]
@@ -61,6 +61,11 @@ func Put(u uint64) {
 	state[0] = a
 	state[1] = b
 	state[2] = c
+}
+
+// Put u into rng
+func Put[T sixb.Integer](u T) {
+	put(uint64(u))
 }
 
 // Get random 64 bits from rng
@@ -83,33 +88,35 @@ func Get() uint64 {
 	return r
 }
 
-// putS inserts a pointer & a string into rng
+// putStr inserts a pointer & a string into rng
 //
 //go:nosplit
-func putS(s string) {
-	lu := sixb.StoU4(s)
+func putStr(s string) {
+	lu := sixb.Integers[uint32](s)
 	if len(lu) <= 0 {
 		return
 	}
-	Put(uint64(uintptr(unsafe.Pointer(&lu[0]))))
+	Put(sixb.PtrToInt(&lu[0]))
+
 	for _, u := range lu {
-		Put(uint64(u))
+		Put(u)
 	}
 }
 
-// putLs inserts a pointer & sum of strings into rng
+// putList inserts a pointer & sum of strings into rng
 //
 //go:nosplit
-func putLs(ls []string) {
+func putList(ls []string) {
 	if len(ls) <= 0 {
 		return
 	}
-	Put(uint64(uintptr(unsafe.Pointer(&ls[0]))))
-	sum := ""
+	Put(sixb.PtrToInt(&ls[0]))
+
+	var sum strings.Builder
 	for _, s := range ls {
-		sum += s
+		sum.WriteString(s)
 	}
-	putS(sum)
+	putStr(sum.String())
 }
 
 //go:nosplit
@@ -117,16 +124,16 @@ func init() {
 	// insert various data into rng
 	now := time.Now()
 	zone, off := now.Zone()
-	Put(uint64(now.UnixNano()))
-	Put(uint64(off))
-	Put(uint64(os.Getpid()))
-	Put(uint64(os.Getppid()))
-	Put(uint64(uintptr(unsafe.Pointer(&now))))
+	Put(now.UnixNano())
+	Put(off)
+	Put(os.Getpid())
+	Put(os.Getppid())
+	Put(sixb.PtrToInt(&now))
 
 	host, _ := os.Hostname()
 	wdir, _ := os.Getwd()
-	putS(zone + host + wdir)
+	putStr(zone + host + wdir)
 
-	putLs(os.Args)
-	putLs(os.Environ())
+	putList(os.Args)
+	putList(os.Environ())
 }
