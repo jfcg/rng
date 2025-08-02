@@ -3,10 +3,10 @@ module github.com/jfcg/rng/bench
 go 1.22.0
 
 require (
-	github.com/jfcg/rng v1.0.8
+	github.com/jfcg/rng v1.1.0
 	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 )
 
-require github.com/jfcg/sixb/v2 v2.1.1 // indirect
+require github.com/jfcg/sixb/v2 v2.2.0 // indirect
 
 replace github.com/jfcg/rng => ../
