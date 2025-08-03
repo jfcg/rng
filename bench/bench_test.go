@@ -1,187 +1,242 @@
-/*	Copyright (c) 2022-present, Serhat Şevki Dinçer.
-	This Source Code Form is subject to the terms of the Mozilla Public
-	License, v. 2.0. If a copy of the MPL was not distributed with this
-	file, You can obtain one at http://mozilla.org/MPL/2.0/.
-*/
+// Copyright (c) 2022-present, Serhat Şevki Dinçer.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 package bench
 
 import (
 	"math/rand"
+	rand2 "math/rand/v2"
 	"testing"
 
 	"github.com/jfcg/rng"
-	altr "golang.org/x/exp/rand"
 )
 
 func BenchmarkGet(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_ = rng.Get()
+	var p rng.Prng
+	for range b.N {
+		_ = p.Get()
 	}
 }
 
 func BenchmarkStdGet(b *testing.B) {
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = mr.Uint64()
+	for range b.N {
+		_ = r.Uint64()
 	}
 }
 
-func BenchmarkAltGet(b *testing.B) {
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+func BenchmarkPcgGet(b *testing.B) {
+	r := rand2.NewPCG(1, 2)
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = ar.Uint64()
+	for range b.N {
+		_ = r.Uint64()
+	}
+}
+
+var chaSeed = [32]byte{
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+func BenchmarkChaGet(b *testing.B) {
+	r := rand2.NewChaCha8(chaSeed)
+	b.ResetTimer()
+	for range b.N {
+		_ = r.Uint64()
 	}
 }
 
 func BenchmarkModn(b *testing.B) {
-	for i := uint64(b.N); i > 0; i-- {
-		_ = rng.Modn(i)
+	var p rng.Prng
+	for i := range b.N {
+		_ = p.Modn(uint64(i + 1))
 	}
 }
 
 func BenchmarkStdModn(b *testing.B) {
-	n := int64(b.N)
-	mr := rand.New(rand.NewSource(n))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := n; i > 0; i-- {
-		_ = mr.Int63n(i)
+	for i := range b.N {
+		_ = r.Int63n(int64(i + 1))
 	}
 }
 
-func BenchmarkAltModn(b *testing.B) {
-	n := uint64(b.N)
-	ar := altr.New(altr.NewSource(n))
+func BenchmarkPcgModn(b *testing.B) {
+	r := rand2.New(rand2.NewPCG(1, 2))
 	b.ResetTimer()
-	for i := n; i > 0; i-- {
-		_ = ar.Uint64n(i)
+	for i := range b.N {
+		_ = r.Int64N(int64(i + 1))
 	}
 }
 
-const permN = 200
+func BenchmarkChaModn(b *testing.B) {
+	r := rand2.New(rand2.NewChaCha8(chaSeed))
+	b.ResetTimer()
+	for i := range b.N {
+		_ = r.Int64N(int64(i + 1))
+	}
+}
+
+const permN = 100
 
 func BenchmarkPerm(b *testing.B) {
-	ls := make([]uint32, permN)
+	var p rng.Prng
+	lu := make([]uint32, permN)
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		rng.Permute(ls)
+	for range b.N {
+		p.Permute(lu)
 	}
 }
 
 func BenchmarkStdPerm(b *testing.B) {
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = mr.Perm(permN)
+	for range b.N {
+		_ = r.Perm(permN)
 	}
 }
 
-func BenchmarkAltPerm(b *testing.B) {
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+func BenchmarkPcgPerm(b *testing.B) {
+	r := rand2.New(rand2.NewPCG(1, 2))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = ar.Perm(permN)
+	for range b.N {
+		_ = r.Perm(permN)
+	}
+}
+
+func BenchmarkChaPerm(b *testing.B) {
+	r := rand2.New(rand2.NewChaCha8(chaSeed))
+	b.ResetTimer()
+	for range b.N {
+		_ = r.Perm(permN)
 	}
 }
 
 func BenchmarkExp(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_ = rng.Exp()
+	var p rng.Prng
+	for range b.N {
+		_ = p.Exp()
 	}
 }
 
 func BenchmarkStdExp(b *testing.B) {
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = mr.ExpFloat64()
+	for range b.N {
+		_ = r.ExpFloat64()
 	}
 }
 
-func BenchmarkAltExp(b *testing.B) {
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+func BenchmarkPcgExp(b *testing.B) {
+	r := rand2.New(rand2.NewPCG(1, 2))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = ar.ExpFloat64()
+	for range b.N {
+		_ = r.ExpFloat64()
+	}
+}
+func BenchmarkChaExp(b *testing.B) {
+	r := rand2.New(rand2.NewChaCha8(chaSeed))
+	b.ResetTimer()
+	for range b.N {
+		_ = r.ExpFloat64()
 	}
 }
 
 func BenchmarkOne(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_ = rng.One()
+	var p rng.Prng
+	for range b.N {
+		_ = p.One()
 	}
 }
 
 func BenchmarkStdOne(b *testing.B) {
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = mr.Float64()
+	for range b.N {
+		_ = r.Float64()
 	}
 }
 
-func BenchmarkAltOne(b *testing.B) {
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+func BenchmarkPcgOne(b *testing.B) {
+	r := rand2.New(rand2.NewPCG(1, 2))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = ar.Float64()
+	for range b.N {
+		_ = r.Float64()
+	}
+}
+func BenchmarkChaOne(b *testing.B) {
+	r := rand2.New(rand2.NewChaCha8(chaSeed))
+	b.ResetTimer()
+	for range b.N {
+		_ = r.Float64()
 	}
 }
 
 func BenchmarkTwo(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_ = rng.Two()
+	var p rng.Prng
+	for range b.N {
+		_ = p.Two()
 	}
 }
 
 func BenchmarkNormal(b *testing.B) {
-	for i := b.N; i > 0; i-- {
-		_, _ = rng.Normal()
+	var p rng.Prng
+	for range b.N {
+		_, _ = p.Normal()
 	}
 }
 
 func BenchmarkStdNormal(b *testing.B) {
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = mr.NormFloat64()
+	for range b.N {
+		_ = r.NormFloat64()
 	}
 }
 
-func BenchmarkAltNormal(b *testing.B) {
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+func BenchmarkPcgNormal(b *testing.B) {
+	r := rand2.New(rand2.NewPCG(1, 2))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_ = ar.NormFloat64()
+	for range b.N {
+		_ = r.NormFloat64()
+	}
+}
+func BenchmarkChaNormal(b *testing.B) {
+	r := rand2.New(rand2.NewChaCha8(chaSeed))
+	b.ResetTimer()
+	for range b.N {
+		_ = r.NormFloat64()
 	}
 }
 
-const readN = 255
+const readN = 500
 
-func BenchmarkFill(b *testing.B) {
+func BenchmarkRead(b *testing.B) {
+	var p rng.Prng
 	buf := make([]byte, readN)
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		rng.Fill(buf)
+	for range b.N {
+		p.Fill(buf)
 	}
 }
 
 func BenchmarkStdRead(b *testing.B) {
 	buf := make([]byte, readN)
-	mr := rand.New(rand.NewSource(int64(b.N)))
+	r := rand.New(rand.NewSource(int64(b.N)))
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_, _ = mr.Read(buf)
+	for range b.N {
+		_, _ = r.Read(buf)
 	}
 }
 
-func BenchmarkAltRead(b *testing.B) {
+func BenchmarkChaRead(b *testing.B) {
 	buf := make([]byte, readN)
-	ar := altr.New(altr.NewSource(uint64(b.N)))
+	r := rand2.NewChaCha8(chaSeed)
 	b.ResetTimer()
-	for i := b.N; i > 0; i-- {
-		_, _ = ar.Read(buf)
+	for range b.N {
+		_, _ = r.Read(buf)
 	}
 }

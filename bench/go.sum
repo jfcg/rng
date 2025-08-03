@@ -1,4 +1,2 @@
 github.com/jfcg/sixb/v2 v2.2.0 h1:mKWt18Pis6hXx4a+NEy0V8FxDcPiQnkpqVHmxi9AsAs=
 github.com/jfcg/sixb/v2 v2.2.0/go.mod h1:LONY39vRt9MEU1Ou6WolEpQ6rogdgZ3HWya9Jzp2hUM=
-golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 h1:yqrTHse8TCMW1M1ZCP+VAR/l0kKxwaAIqN/il7x4voA=
-golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8/go.mod h1:tujkw807nyEEAamNbDrEGzRav+ilXA7PCRAd6xsmwiU=

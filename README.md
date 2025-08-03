@@ -3,17 +3,17 @@
 Package `rng` is a compact, fast, [sponge](https://en.wikipedia.org/wiki/Sponge_function)-based,
 lockless and hard-to-predict random number generator. See `Green tick > QA / Tests > Details` for
 some statistical tests and benchmarks. It is compared with standard library's
-[math/rand](https://pkg.go.dev/math/rand) and an alternative implementation
-[exp/rand](https://pkg.go.dev/golang.org/x/exp/rand) below:
+[math/rand](https://pkg.go.dev/math/rand) and [math/rand/v2](https://pkg.go.dev/math/rand/v2) below:
 
-Library|Effective entropy<br>(hidden info, in bits)|Used memory (in bytes)
+Library|Effective entropy in bits|Used memory in bytes
 :---|---:|---:
-rng|128|  24
-std| 31|4920
-alt| 64|  48
+rng      |128|  24
+std      | 31|4920
+v2.PCG   | 64|  32
+v2.ChaCha|256| 336
 
 `rng` API adheres to [semantic](https://semver.org) versioning. 
-`rng` is not suitable for cryptographic applications because it has 128 bits capacity.
+`rng` is not suitable for cryptographic applications because uses 128 bits capacity.
 
 ### Support
 See [Contributing](./.github/CONTRIBUTING.md), [Security](./.github/SECURITY.md) and [Support](./.github/SUPPORT.md) guides. Also if you use `rng` and like it, please support via [Github Sponsors](https://github.com/sponsors/jfcg) or:
