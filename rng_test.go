@@ -118,7 +118,18 @@ func TestPermute(t *testing.T) {
 
 func fillTest(t *testing.T, n int) []byte {
 	buf := make([]byte, n)
-	Fill(buf)
+	buf2 := make([]byte, n)
+	p := global
+
+	n, err := p.Read(buf)
+	if n != len(buf) || err != nil {
+		t.Fatal("rng.Prng.Read: must return len(buf), nil")
+	}
+
+	Fill(buf2)
+	if !bytes.Equal(buf, buf2) {
+		t.Error("rng.Fill: must fill same data on buffers!")
+	}
 
 	if n >= 16 {
 		lu := sixb.Slice[uint64](buf)
@@ -139,5 +150,16 @@ func TestFill(t *testing.T) {
 		if n >= 8 && bytes.Equal(buf1, buf2) {
 			t.Error("rng.Fill: unlikely equal buffers!")
 		}
+	}
+}
+
+func TestReset(t *testing.T) {
+	var p Prng
+	a, b, c := p.Get(), p.Get(), p.Get()
+	p.Reset()
+	d, e, f := p.Get(), p.Get(), p.Get()
+
+	if a != d || b != e || c != f {
+		t.Fatal("rng.Prng.Reset: expected:", a, b, c, "got:", d, e, f)
 	}
 }
