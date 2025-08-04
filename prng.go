@@ -200,12 +200,16 @@ func (p *Prng) Fill(buf []byte) {
 }
 
 // Read wraps [Prng.Fill] and always returns len(buf), nil
+//
+//go:nosplit
 func (p *Prng) Read(buf []byte) (n int, err error) {
 	p.Fill(buf)
 	return len(buf), nil
 }
 
 // Reset p.
+//
+//go:nosplit
 func (p *Prng) Reset() {
 	p.a, p.b, p.c = 0, 0, 0
 }
@@ -213,7 +217,7 @@ func (p *Prng) Reset() {
 var randCount uint64
 
 // Randomize p. After this call, results of p's methods
-// will not be reproducable until [Prng.Reset]() is called.
+// will not be reproducible until [Prng.Reset]() is called.
 //
 //go:nosplit
 func (p *Prng) Randomize() {

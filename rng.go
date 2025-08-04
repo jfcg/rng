@@ -4,7 +4,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 // Package rng provides a compact, fast, [sponge]-based, lockless and hard-to-predict
-// global random number generator. It also provides [Prng] for determinisic behavior.
+// global random number generator. It also provides [Prng] for deterministic behavior.
 // Neither is suitable for cryptographic applications because of 128 bits capacity.
 //
 // [sponge]: https://en.wikipedia.org/wiki/Sponge_function
