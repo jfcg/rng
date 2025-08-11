@@ -11,7 +11,8 @@ on:
 permissions:
   contents: read
 env:
-  GOAMD64: v2
+  GOAMD64: v3
+  GOARM64: v8.1,lse
 
 jobs:
   Tests:
@@ -28,7 +29,7 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
     - name: Run Tests with Coverage
-      run:  go test -timeout 5m -v -cover
+      run:  go test -timeout 5m -v -cover -ldflags '-s -w' -trimpath
 
   Benchmarks:
     needs: Tests
@@ -44,7 +45,7 @@ jobs:
       with:
         go-version: stable
     - name: Run Benchmarks
-      run: cd bench && go test -timeout 5m -run ^$ -bench . -benchmem
+      run: cd bench && go test -timeout 5m -run ^$ -bench . -benchmem -ldflags '-s -w' -trimpath
 
   Analysis:
     needs: Benchmarks
