@@ -15,7 +15,7 @@ import (
 func rvTest(t *testing.T, fn func() (float64, float64),
 	min, median, max, imean, istd float64, name string) {
 
-	rvPrint(imean, istd, HalfN, HalfN, "(ideal)")
+	rvPrint(imean, istd, HalfN, HalfN, "ideal "+name)
 
 	px, nx, py, ny := 0, 0, 0, 0
 	mx, vx, my, vy, mxy := .0, .0, .0, .0, .0
@@ -90,6 +90,18 @@ func TestTwo(t *testing.T) {
 	rvTest(t, func() (float64, float64) {
 		return Two(), Two()
 	}, -1, 0, 1, 0, 0.57735, "Two")
+}
+
+func TestTri1(t *testing.T) {
+	rvTest(t, func() (float64, float64) {
+		return Tri1(), Tri1()
+	}, 0, 0.5, 1, 0.5, 0.20412, "Tri1")
+}
+
+func TestTri2(t *testing.T) {
+	rvTest(t, func() (float64, float64) {
+		return Tri2(), Tri2()
+	}, -1, 0, 1, 0, 0.40825, "Tri2")
 }
 
 func TestNormal(t *testing.T) {

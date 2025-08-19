@@ -185,6 +185,15 @@ func BenchmarkTwo(b *testing.B) {
 	}
 }
 
+func BenchmarkTri2(b *testing.B) {
+	var p rng.Prng
+	p.Put(uint64(b.N))
+	p.Put(uint64(b.N + 1))
+	for range b.N {
+		_ = p.Tri2()
+	}
+}
+
 func BenchmarkNormal(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))

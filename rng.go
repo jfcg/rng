@@ -59,6 +59,20 @@ func TwoR() float64 {
 	return global.TwoR()
 }
 
+// Tri1 returns a number from symmetric triangular distribution in interval (0, 1) from global rng.
+//
+//go:norace
+func Tri1() float64 {
+	return global.Tri1()
+}
+
+// Tri2 returns a number from symmetric triangular distribution in interval (-1, 1) from global rng.
+//
+//go:norace
+func Tri2() float64 {
+	return global.Tri2()
+}
+
 // Exp returns an exponentially distributed number (mean=1) from global rng.
 //
 //go:norace

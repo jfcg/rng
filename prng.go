@@ -86,30 +86,40 @@ func (p *Prng) Get() uint64 {
 
 // One returns a uniformly distributed number in interval [0, 1) from p.
 func (p *Prng) One() float64 { // inlined
-
 	i := int64(p.Get() >> 11) // [0, 2^53)
 	return float64(i) / (1 << 53)
 }
 
 // OneR returns a uniformly distributed number in interval (0, 1] from p.
 func (p *Prng) OneR() float64 { // inlined
-
 	i := int64(p.Get()>>11) + 1 // (0, 2^53]
 	return float64(i) / (1 << 53)
 }
 
 // Two returns a uniformly distributed number in interval [-1, 1) from p.
 func (p *Prng) Two() float64 { // inlined
-
 	i := int64(p.Get()) >> 10 // [-2^53, 2^53)
 	return float64(i) / (1 << 53)
 }
 
 // TwoR returns a uniformly distributed number in interval (-1, 1] from p.
 func (p *Prng) TwoR() float64 { // inlined
-
 	i := int64(p.Get())>>10 + 1 // (-2^53, 2^53]
 	return float64(i) / (1 << 53)
+}
+
+// Tri1 returns a number from symmetric triangular distribution in interval (0, 1) from p.
+func (p *Prng) Tri1() float64 { // inlined
+	i := int64(p.Get() >> 12)   // [0, 2^52)
+	k := int64(p.Get()>>12) + 1 // (0, 2^52]
+	return float64(i+k) / (1 << 53)
+}
+
+// Tri2 returns a number from symmetric triangular distribution in interval (-1, 1) from p.
+func (p *Prng) Tri2() float64 { // inlined
+	i := int64(p.Get()) >> 11   // [-2^52, 2^52)
+	k := int64(p.Get())>>11 + 1 // (-2^52, 2^52]
+	return float64(i+k) / (1 << 53)
 }
 
 // Exp returns an exponentially distributed number (mean=1) from p.
