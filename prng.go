@@ -91,6 +91,13 @@ func (p *Prng) One() float64 { // inlined
 	return float64(i) / (1 << 53)
 }
 
+// OneR returns a uniformly distributed number in interval (0, 1] from p.
+func (p *Prng) OneR() float64 { // inlined
+
+	i := int64(p.Get()>>11) + 1 // (0, 2^53]
+	return float64(i) / (1 << 53)
+}
+
 // Two returns a uniformly distributed number in interval [-1, 1) from p.
 func (p *Prng) Two() float64 { // inlined
 
@@ -98,15 +105,16 @@ func (p *Prng) Two() float64 { // inlined
 	return float64(i) / (1 << 53)
 }
 
+// TwoR returns a uniformly distributed number in interval (-1, 1] from p.
+func (p *Prng) TwoR() float64 { // inlined
+
+	i := int64(p.Get())>>10 + 1 // (-2^53, 2^53]
+	return float64(i) / (1 << 53)
+}
+
 // Exp returns an exponentially distributed number (mean=1) from p.
-//
-//go:nosplit
-func (p *Prng) Exp() float64 {
-	var x float64
-	for x == 0 {
-		x = p.One()
-	}
-	return -math.Log(x)
+func (p *Prng) Exp() float64 { // inlined
+	return -math.Log(p.OneR())
 }
 
 // Normal returns two independent & normally distributed
@@ -115,7 +123,7 @@ func (p *Prng) Exp() float64 {
 //go:nosplit
 func (p *Prng) Normal() (float64, float64) {
 	var x, y, k float64
-	for !(0 < k && k < 1) {
+	for !(0 < k && k <= 1) {
 		x = p.Two()
 		y = p.Two()
 		k = x*x + y*y
@@ -123,8 +131,6 @@ func (p *Prng) Normal() (float64, float64) {
 	k = math.Sqrt(-2 * math.Log(k) / k)
 	return k * x, k * y
 }
-
-const maxU8 uint64 = 1<<64 - 1
 
 // Modn returns a uniformly selected integer in 0,..,n-1
 // from p for n ≥ 2, and returns n-1 for n < 2.
@@ -148,9 +154,9 @@ func (p *Prng) Modn(n uint64) uint64 {
 	}
 
 	// mostly avoid one division
-	if v > maxU8-n {
+	if v > ^n {
 		// largest multiple of n < 2^64
-		lastn := maxU8 - maxU8%n
+		lastn := ^((1<<64 - 1) % n)
 		for v >= lastn {
 			v = p.Get()
 		}

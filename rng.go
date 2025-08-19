@@ -38,11 +38,25 @@ func One() float64 {
 	return global.One()
 }
 
+// OneR returns a uniformly distributed number in interval (0, 1] from global rng.
+//
+//go:norace
+func OneR() float64 {
+	return global.OneR()
+}
+
 // Two returns a uniformly distributed number in interval [-1, 1) from global rng.
 //
 //go:norace
 func Two() float64 {
 	return global.Two()
+}
+
+// TwoR returns a uniformly distributed number in interval (-1, 1] from global rng.
+//
+//go:norace
+func TwoR() float64 {
+	return global.TwoR()
 }
 
 // Exp returns an exponentially distributed number (mean=1) from global rng.

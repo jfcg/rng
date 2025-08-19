@@ -39,7 +39,7 @@ func TestModn(t *testing.T) {
 	ranges := []uint64{
 		^uint64(Many), Many,
 		1<<63 - Many, 1<<63 + Many,
-		maxU8/3 + 1, maxU8/3 + Many}
+		1<<64/3 + 1, 1<<64/3 + Many}
 
 	for r := len(ranges) - 1; r > 0; r -= 2 {
 		for n := ranges[r-1]; n != ranges[r]; n++ {
