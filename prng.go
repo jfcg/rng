@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	sb "github.com/jfcg/sixb/v2"
+	sb "github.com/jfcg/sixb/v3"
 )
 
 const (

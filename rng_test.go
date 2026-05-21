@@ -11,7 +11,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/jfcg/sixb/v2"
+	"github.com/jfcg/sixb/v3"
 )
 
 func TestGet(t *testing.T) {
