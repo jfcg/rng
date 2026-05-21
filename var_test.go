@@ -86,10 +86,22 @@ func TestOne(t *testing.T) {
 	}, 0, 0.5, 1, 0.5, 0.288675, "One")
 }
 
+func TestOneR(t *testing.T) {
+	rvTest(t, func() (float64, float64) {
+		return OneR(), OneR()
+	}, 0, 0.5, 1, 0.5, 0.288675, "OneR")
+}
+
 func TestTwo(t *testing.T) {
 	rvTest(t, func() (float64, float64) {
 		return Two(), Two()
 	}, -1, 0, 1, 0, 0.57735, "Two")
+}
+
+func TestTwoR(t *testing.T) {
+	rvTest(t, func() (float64, float64) {
+		return TwoR(), TwoR()
+	}, -1, 0, 1, 0, 0.57735, "TwoR")
 }
 
 func TestTri1(t *testing.T) {
