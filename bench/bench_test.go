@@ -18,21 +18,21 @@ func BenchmarkGet(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_ = p.Get()
 	}
 }
 
 func BenchmarkStdGet(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Uint64()
 	}
 }
 
 func BenchmarkPcgGet(b *testing.B) {
 	r := rand2.NewPCG(uint64(b.N), uint64(b.N+1))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Uint64()
 	}
 }
@@ -49,38 +49,46 @@ func initCha(n int) *rand2.ChaCha8 {
 
 func BenchmarkChaGet(b *testing.B) {
 	r := initCha(b.N)
-	for range b.N {
+	for b.Loop() {
 		_ = r.Uint64()
 	}
 }
 
 func BenchmarkModn(b *testing.B) {
 	var p rng.Prng
+	var i uint64
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for i := range b.N {
-		_ = p.Modn(uint64(i + 1))
+	for b.Loop() {
+		i++
+		_ = p.Modn(i)
 	}
 }
 
 func BenchmarkStdModn(b *testing.B) {
+	var i int64
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for i := range b.N {
-		_ = r.Int63n(int64(i + 1))
+	for b.Loop() {
+		i++
+		_ = r.Int63n(i)
 	}
 }
 
 func BenchmarkPcgModn(b *testing.B) {
+	var i int64
 	r := rand2.New(rand2.NewPCG(uint64(b.N), uint64(b.N+1)))
-	for i := range b.N {
-		_ = r.Int64N(int64(i + 1))
+	for b.Loop() {
+		i++
+		_ = r.Int64N(i)
 	}
 }
 
 func BenchmarkChaModn(b *testing.B) {
+	var i int64
 	r := rand2.New(initCha(b.N))
-	for i := range b.N {
-		_ = r.Int64N(int64(i + 1))
+	for b.Loop() {
+		i++
+		_ = r.Int64N(i)
 	}
 }
 
@@ -92,28 +100,28 @@ func BenchmarkPerm(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		p.Permute(permLs[:])
 	}
 }
 
 func BenchmarkStdPerm(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Perm(permN)
 	}
 }
 
 func BenchmarkPcgPerm(b *testing.B) {
 	r := rand2.New(rand2.NewPCG(uint64(b.N), uint64(b.N+1)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Perm(permN)
 	}
 }
 
 func BenchmarkChaPerm(b *testing.B) {
 	r := rand2.New(initCha(b.N))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Perm(permN)
 	}
 }
@@ -122,27 +130,27 @@ func BenchmarkExp(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_ = p.Exp()
 	}
 }
 
 func BenchmarkStdExp(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.ExpFloat64()
 	}
 }
 
 func BenchmarkPcgExp(b *testing.B) {
 	r := rand2.New(rand2.NewPCG(uint64(b.N), uint64(b.N+1)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.ExpFloat64()
 	}
 }
 func BenchmarkChaExp(b *testing.B) {
 	r := rand2.New(initCha(b.N))
-	for range b.N {
+	for b.Loop() {
 		_ = r.ExpFloat64()
 	}
 }
@@ -151,27 +159,27 @@ func BenchmarkOne(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_ = p.One()
 	}
 }
 
 func BenchmarkStdOne(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Float64()
 	}
 }
 
 func BenchmarkPcgOne(b *testing.B) {
 	r := rand2.New(rand2.NewPCG(uint64(b.N), uint64(b.N+1)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Float64()
 	}
 }
 func BenchmarkChaOne(b *testing.B) {
 	r := rand2.New(initCha(b.N))
-	for range b.N {
+	for b.Loop() {
 		_ = r.Float64()
 	}
 }
@@ -180,7 +188,7 @@ func BenchmarkTwo(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_ = p.Two()
 	}
 }
@@ -189,7 +197,7 @@ func BenchmarkTri2(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_ = p.Tri2()
 	}
 }
@@ -198,27 +206,27 @@ func BenchmarkNormal(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		_, _ = p.Normal() // two samples per call
 	}
 }
 
 func BenchmarkStdNormal(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.NormFloat64()
 	}
 }
 
 func BenchmarkPcgNormal(b *testing.B) {
 	r := rand2.New(rand2.NewPCG(uint64(b.N), uint64(b.N+1)))
-	for range b.N {
+	for b.Loop() {
 		_ = r.NormFloat64()
 	}
 }
 func BenchmarkChaNormal(b *testing.B) {
 	r := rand2.New(initCha(b.N))
-	for range b.N {
+	for b.Loop() {
 		_ = r.NormFloat64()
 	}
 }
@@ -231,21 +239,21 @@ func BenchmarkRead(b *testing.B) {
 	var p rng.Prng
 	p.Put(uint64(b.N))
 	p.Put(uint64(b.N + 1))
-	for range b.N {
+	for b.Loop() {
 		p.Fill(readLs[:])
 	}
 }
 
 func BenchmarkStdRead(b *testing.B) {
 	r := rand.New(rand.NewSource(int64(b.N)))
-	for range b.N {
+	for b.Loop() {
 		_, _ = r.Read(readLs[:])
 	}
 }
 
 func BenchmarkChaRead(b *testing.B) {
 	r := initCha(b.N)
-	for range b.N {
+	for b.Loop() {
 		_, _ = r.Read(readLs[:])
 	}
 }

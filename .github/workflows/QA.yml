@@ -45,7 +45,7 @@ jobs:
       with:
         go-version: stable
     - name: Run Benchmarks
-      run: cd bench && go test -timeout 5m -run ^$ -bench . -benchmem -ldflags '-s -w' -trimpath
+      run: cd bench && go test -timeout 5m -run '^$' -bench . -benchmem -ldflags '-s -w' -trimpath
 
   Analysis:
     needs: Benchmarks
